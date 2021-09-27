@@ -14,7 +14,7 @@ Firstly, start off your table in <http://www.tablesgenerator.com/>.
 
 Tables Generator will do a lot for you. Its most useful features are importing from .csv and merging cells. The Booktabs table style (alternative to default table style from the menu) looks a bit nicer and is "publication quality". Note that publication quality tables should not contain vertical lines.
 
-![Screen shoti of Tables Generator](http://riinudata.files.wordpress.com/2014/09/tablesgenerator1.png)
+![Screen shoti of Tables Generator](https://riinudata.files.wordpress.com/2014/09/tablesgenerator1.png)
 
 <p class="caption">Screen shot of Tables Generator</p>
 

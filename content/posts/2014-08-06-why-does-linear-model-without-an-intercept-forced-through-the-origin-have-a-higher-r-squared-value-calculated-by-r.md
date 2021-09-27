@@ -17,13 +17,13 @@ Answer in short: Because different formulas are used to calculate the R-squared 
 
 R2 for a linear model that has an intercept:
 
-![CodeCogsEqn](http://riinudata.files.wordpress.com/2014/08/codecogseqn.png),
+![CodeCogsEqn](https://riinudata.files.wordpress.com/2014/08/codecogseqn.png),
 
 where _**y**_ is the variable that the linear model is trying to predict (the response variable), _y^_ is the predicted value and _y-_ is the mean value of the response variable.
 
 And the R2 for a linear model that is forced through the origin:
 
-![CodeCogsEqn (2)](http://riinudata.files.wordpress.com/2014/08/codecogseqn-2.png),
+![CodeCogsEqn (2)](https://riinudata.files.wordpress.com/2014/08/codecogseqn-2.png),
 
 basically the mean value of the response variable is removed from the equation, making the denominator bigger (and the result of the division smaller). The reason why the  mean can not be used for this calculation is that it does not make sense any more - forcing the fit through zero kind of means adding an infinite number of (0,0) points into the dataset.
 
