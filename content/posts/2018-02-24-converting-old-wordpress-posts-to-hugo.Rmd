@@ -1,0 +1,69 @@
+---
+title: Converting old Wordpress posts to Hugo
+author: Riinu Ots
+date: '2018-02-24'
+slug: converting-old-wordpress-posts-to-hugo
+thumbnailImage: /img/thumbnails/wordpress.jpg
+categories:
+  - scripting
+tags:
+  - wordpress
+  - hugo
+  - blogdown
+output: md_document
+---
+
+
+
+Between 2014-2018 I published 29 posts on riinudata.wordpress.com. Today I'm converting all of those to my new website powered by [blogdown-Hugo](https://riinu.netlify.com/2018/02/hello-world/).
+
+## Step 1
+
+Read the [Migration: From Wordpress](https://bookdown.org/yihui/blogdown/from-wordpress.html) chapter of the **blogdown** book.
+
+## Step 2
+
+Get all your wordpress posts into one XML: WP Admin - Tools - Export.
+
+## Step 3 
+
+Install [Exitwp](https://github.com/thomasf/exitwp) and its dependencies (`pyyamp`, `beautifulsoup4`, `html2text`):
+
+```
+git clone https://github.com/thomasf/exitwp.git
+sudo easy_install pip
+sudo pip install pyyaml
+sudo pip install beautifulsoup4
+sudo pip install html2text
+```
+This worked on macOS^[I'm only 1.5 years late to discover that OS X has been rebranded as macOS: https://www.wired.com/2016/06/apple-os-x-dead-long-live-macos/] High Sierra - I already had `python` installed.
+
+## Step 4
+
+Working in the directory that `git clone` created (`exitwp`):
+
+* Put the Wordpress XML in the wordpress-xml directory.
+* Run `xmllint riinu_wordpress.xml`, worked the first time for me and I didn't get any errors (so not sure what the **fix errors if there are** would entail).
+* Back in the `exitwp` folder, run `python exitwp.py`
+* This created folders `build/jekyll/riinudata.wordpress.com/_posts` and the content looked like this:
+
+![](/img/exitwp.png)
+
+* Move all these into `exitwp/post` folder.
+
+## Step 5
+
+* Take a copy of https://github.com/yihui/oldblog_xml/blob/master/convert.R to clean these .markdown files up and ready for Hugo. I edited the first three lines, skipped the "Do not run if..." chunk as I'd already done that in **Step 3**, edited the `authors = c()`, did not run the very last chunk (`local({if (!dir.exist...})`).
+* Move all of the files (now `.md`) into `content/post` of your blogdown repo. Build and voila!
+
+## Further modifications
+
+Looks like most of my posts were converted like a charm, with nicely formatted code blocks and images. But I few things I noticed that I think I have to fix:
+
+* GitHub gists are now displayed as links, will make those into code blocks (or embed them using a [Hugo shortcodes](http://blog.cronally.com/embed-gists-with-hugo/).
+* Most images show up perfectly, but some have gotten stuck in a code block, e.g. showing up as `<img src="https://riinudata.files.wordpress.com/2016/04/rplot.png" alt="Rplot"/>`. Will sort these
+
+Overall I feared a lot worse and am super happy with the conversion experience. Took exactly 3 h.
+
+
+![My name is Hildegard and I approve this message.](/img/hilde_knit.jpg)

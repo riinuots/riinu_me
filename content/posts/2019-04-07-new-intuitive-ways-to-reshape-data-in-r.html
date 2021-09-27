@@ -1,0 +1,313 @@
+---
+title: "New intuitive ways for reshaping data in R: long live pivot_longer() and pivot_wider()"
+author: Riinu
+date: '2019-04-07'
+slug: new-intuitive-ways-to-reshape-data-in-r
+thumbnailImage: /img/thumbnails/tidyr.png
+categories:
+  - R
+tags:
+  - wrangling
+  - tidyr
+editor_options: 
+  chunk_output_type: console
+output: md_document
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>TLDR: there are two new and very intuitive R functions for reshaping data: see <a href="#examples">Examples</a> of <code>pivot_longer()</code> and <code>pivot_wider()</code> below. At the time of writing, these new functions are extremely fresh and only exist in the development version on GitHub (see <a href="#installation">Installation</a>), we should probably wait for the tidyverse team to officially release them (in CRAN) before putting them into day-to-day use.</p>
+<p>Exciting!</p>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>The juxtapose of <em>data collection</em> vs <em>data analysis</em>: data that was very easy to collect, is probably very hard to analyse, and vice versa. For example, if data is collected/written down whichever format was most convenient at the time of data collection, it is probably not recorded in a regularly shaped table, with various bits of information in different parts of the document. And even if data is collected into a table, it is often intuitive (for data entry) to include information about the same variable in different columns. For example, look at this example data I just made up:</p>
+<pre class="r"><code>library(tidyverse)
+
+candydata_raw = read_csv(&quot;2019-04-07_candy_preference_data.csv&quot;)</code></pre>
+<table style="width:100%;">
+<colgroup>
+<col width="12%" />
+<col width="14%" />
+<col width="15%" />
+<col width="15%" />
+<col width="13%" />
+<col width="14%" />
+<col width="14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">candy_type</th>
+<th align="right">likes age: 5</th>
+<th align="right">likes age: 10</th>
+<th align="right">likes age: 15</th>
+<th align="right">gets age: 5</th>
+<th align="right">gets age: 10</th>
+<th align="right">gets age: 15</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Chocolate</td>
+<td align="right">4</td>
+<td align="right">6</td>
+<td align="right">8</td>
+<td align="right">2</td>
+<td align="right">4</td>
+<td align="right">6</td>
+</tr>
+<tr class="even">
+<td align="left">Lollipop</td>
+<td align="right">10</td>
+<td align="right">8</td>
+<td align="right">6</td>
+<td align="right">8</td>
+<td align="right">6</td>
+<td align="right">4</td>
+</tr>
+</tbody>
+</table>
+<p>For each candy type, there are 8 columns with values. But actually, these 8 columns capture a combination of 3 variables: <code>age</code>, <code>likes</code> and <code>eats</code>. This is known as the wide format, and it is a convenient way to either note down or even present values. It is human-readable. For effective data analysis, however, we need data to be in the tidy data format, where each column is a single variable, and each row a single observation (<a href="https://www.jstatsoft.org/article/view/v059i10" class="uri">https://www.jstatsoft.org/article/view/v059i10</a>). It needs to be less human-readable and more computer-friendly.</p>
+<p>Some of you may remember now retired <code>reshape2::melt()</code> or <code>reshape2::dcast()</code>, and many of you (inclduing myself!) have struggled remebering the arguments for <code>tidyr::gather()</code> and <code>tidyr::spread()</code>. Based on extensive community feedback, the tidyverse team have reinveted these functions using both more intuitive names, as well as clearer syntax (arguments):</p>
+<p>{{% tweet "1109816130774986753" %}}</p>
+</div>
+<div id="installation20190407" class="section level1">
+<h1>Installation</h1>
+<p>These functions were added just a month ago, so these functions are not yet included in the standard version of <code>tidyr</code> that comes with <code>install.packages("tidyverse")</code> or even <code>update.packages()</code> (the current version of <code>tidyr</code> on CRAN is 0.8.3). To play with the bleeding edge versions of R packages, run <code>install.packages("devtools")</code> and then <code>devtools::install_github("tidyverse/tidyr")</code>. If you are a Mac user and it asks you “Do you want to install from sources the package which needs compilation?”, say Yes.</p>
+<p>You might need to Restart R (Session menu at the top) and load <code>library(tidyverse)</code> again. You can check whether you now have these functions installed by typing in <code>pivot_longer</code> and pressing F1 - if a relevant Help tab pops open you got it.</p>
+</div>
+<div id="examples20190407" class="section level1">
+<h1>Examples</h1>
+<pre class="r"><code>candydata_longer = candydata_raw %&gt;% 
+  pivot_longer(contains(&quot;age&quot;))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">candy_type</th>
+<th align="left">name</th>
+<th align="right">value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Chocolate</td>
+<td align="left">likes age: 5</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">Chocolate</td>
+<td align="left">likes age: 10</td>
+<td align="right">6</td>
+</tr>
+<tr class="odd">
+<td align="left">Chocolate</td>
+<td align="left">likes age: 15</td>
+<td align="right">8</td>
+</tr>
+<tr class="even">
+<td align="left">Chocolate</td>
+<td align="left">gets age: 5</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Chocolate</td>
+<td align="left">gets age: 10</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">Chocolate</td>
+<td align="left">gets age: 15</td>
+<td align="right">6</td>
+</tr>
+<tr class="odd">
+<td align="left">Lollipop</td>
+<td align="left">likes age: 5</td>
+<td align="right">10</td>
+</tr>
+<tr class="even">
+<td align="left">Lollipop</td>
+<td align="left">likes age: 10</td>
+<td align="right">8</td>
+</tr>
+<tr class="odd">
+<td align="left">Lollipop</td>
+<td align="left">likes age: 15</td>
+<td align="right">6</td>
+</tr>
+<tr class="even">
+<td align="left">Lollipop</td>
+<td align="left">gets age: 5</td>
+<td align="right">8</td>
+</tr>
+<tr class="odd">
+<td align="left">Lollipop</td>
+<td align="left">gets age: 10</td>
+<td align="right">6</td>
+</tr>
+<tr class="even">
+<td align="left">Lollipop</td>
+<td align="left">gets age: 15</td>
+<td align="right">4</td>
+</tr>
+</tbody>
+</table>
+<p>Now, that’s already a lot better, but we still need to split the <code>name</code> column into the two different variables it really includes. “name” is what <code>pivot_longer()</code> calls this new column by default. Remember, each column is a single variable.</p>
+<pre class="r"><code>candydata_longer = candydata_raw %&gt;% 
+  pivot_longer(contains(&quot;age&quot;)) %&gt;% 
+  separate(name, into = c(&quot;questions&quot;, NA, &quot;age&quot;), convert = TRUE)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">candy_type</th>
+<th align="left">questions</th>
+<th align="right">age</th>
+<th align="right">value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Chocolate</td>
+<td align="left">likes</td>
+<td align="right">5</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">Chocolate</td>
+<td align="left">likes</td>
+<td align="right">10</td>
+<td align="right">6</td>
+</tr>
+<tr class="odd">
+<td align="left">Chocolate</td>
+<td align="left">likes</td>
+<td align="right">15</td>
+<td align="right">8</td>
+</tr>
+<tr class="even">
+<td align="left">Chocolate</td>
+<td align="left">gets</td>
+<td align="right">5</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Chocolate</td>
+<td align="left">gets</td>
+<td align="right">10</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">Chocolate</td>
+<td align="left">gets</td>
+<td align="right">15</td>
+<td align="right">6</td>
+</tr>
+<tr class="odd">
+<td align="left">Lollipop</td>
+<td align="left">likes</td>
+<td align="right">5</td>
+<td align="right">10</td>
+</tr>
+<tr class="even">
+<td align="left">Lollipop</td>
+<td align="left">likes</td>
+<td align="right">10</td>
+<td align="right">8</td>
+</tr>
+<tr class="odd">
+<td align="left">Lollipop</td>
+<td align="left">likes</td>
+<td align="right">15</td>
+<td align="right">6</td>
+</tr>
+<tr class="even">
+<td align="left">Lollipop</td>
+<td align="left">gets</td>
+<td align="right">5</td>
+<td align="right">8</td>
+</tr>
+<tr class="odd">
+<td align="left">Lollipop</td>
+<td align="left">gets</td>
+<td align="right">10</td>
+<td align="right">6</td>
+</tr>
+<tr class="even">
+<td align="left">Lollipop</td>
+<td align="left">gets</td>
+<td align="right">15</td>
+<td align="right">4</td>
+</tr>
+</tbody>
+</table>
+<p>And <code>pivot_wider()</code> can be used to do the reverse:</p>
+<pre class="r"><code>candydata = candydata_longer %&gt;% 
+  pivot_wider(names_from = questions, values_from = value)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">candy_type</th>
+<th align="right">age</th>
+<th align="right">likes</th>
+<th align="right">gets</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Chocolate</td>
+<td align="right">5</td>
+<td align="right">4</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Chocolate</td>
+<td align="right">10</td>
+<td align="right">6</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">Chocolate</td>
+<td align="right">15</td>
+<td align="right">8</td>
+<td align="right">6</td>
+</tr>
+<tr class="even">
+<td align="left">Lollipop</td>
+<td align="right">5</td>
+<td align="right">10</td>
+<td align="right">8</td>
+</tr>
+<tr class="odd">
+<td align="left">Lollipop</td>
+<td align="right">10</td>
+<td align="right">8</td>
+<td align="right">6</td>
+</tr>
+<tr class="even">
+<td align="left">Lollipop</td>
+<td align="right">15</td>
+<td align="right">6</td>
+<td align="right">4</td>
+</tr>
+</tbody>
+</table>
+<p>It is important to spell out the arguments here (<code>names_from =</code>, <code>values_frame =</code>) since they are not the second and third arguments of <code>pivot_wider()</code> (like they were in <code>spread()</code>). Investigate the <code>pivot_wider+F1</code> Help tab for more information.</p>
+</div>
+<div id="wrap-up-and-notes" class="section level1">
+<h1>Wrap-up and notes</h1>
+<p>Now these are datasets we can work with: each column is a variable, each row is an observation.</p>
+<p>Do not start replacing working and tested instances of <code>gather()</code> or <code>spread()</code> in your existing R code with these new functions. That is neither efficient nor necessary - <code>gather()</code> and <code>spread()</code> will remain in <code>tidyr</code> to make sure people’s scripts don’t suddenly stop working. Meaning: <code>tidyr</code> is backward compatible. But after these functions are officially released, I will start using them in all new scripts I write.</p>
+<p>I made the original messy columns still relatively nice to work with - no typos and reasonable delimiters. Usually, the labels are much worse and need the help of <code>janitor::clean_names()</code>, <code>stringr::str_replace()</code>, and multiple iterations of <code>tidyr::separate()</code> to arrive at a nice tidy tibble/data frame.</p>
+<div id="tidyrseparate-tips" class="section level2">
+<h2>tidyr::separate() tips:</h2>
+<p><code>into = c("var1", NA, "var2")</code> - now this is an amazing trick I only came across this week! This is a convenient way to drop useless (new) columns. Previously, I would have achieved the same result with:</p>
+<pre><code>... %&gt;% 
+    separate(..., into = c(&quot;var1&quot;, &quot;drop&quot;, &quot;var2&quot;)) %&gt;% 
+    select(-drop) %&gt;% 
+    ...
+    </code></pre>
+<p><code>convert = TRUE</code>: by default, <code>separate()</code> creates new variables that are also just “characters”. This means our age would have been a chacter vector of, e.g., “5”, “10”, rather than 5, 10, and R wouldn’t have known how to do arithmetic on it. In this example, <code>convert = TRUE</code> is equivalent to <code>mutate(age = as.numeric(age))</code>.</p>
+<p>Good luck!</p>
+<p>P.S. This is one of the coolest Tweets I’ve ever seen:</p>
+<p>{{% tweet "1112675046663876608" %}}</p>
+</div>
+</div>

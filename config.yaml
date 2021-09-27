@@ -1,9 +1,9 @@
 baseURL: https://vigilant-sammet-da14f5.netlify.app/
 languageCode: en-us
 defaultContentLanguage: en-us
-title: Hugo tranquilpeak theme
+title: "Riinu's scripting diary"
 theme: hugo-tranquilpeak-theme
-disqusShortname: hugo-tranquilpeak-theme
+disqusShortname: riinuots
 paginate: 7
 canonifyurls: yes
 permalinks:
@@ -18,18 +18,18 @@ markup:
     ordered: no
     startLevel: 1
 author:
-  bio: Super bio with markdown support **COOL**
-  gravatarEmail: thibaud.lepretre@gmail.com
-  job: Your job title
-  location: France
-  name: Firstname Lastname
-  picture: https://cdn1.iconfinder.com/data/icons/ninja-things-1/1772/ninja-simple-512.png
+  bio: "if it aint broke, you're outdated"
+  gravatarEmail: vihmauss@gmail.com
+  job: "Senior Data Manager"
+  location: "Edinburgh, UK"
+  name: "Riinu Pius (Ots)"
+  # picture: https://cdn1.iconfinder.com/data/icons/ninja-things-1/1772/ninja-simple-512.png
 menu:
   links:
     - identifier: github
       name: GitHub
       pre: <i class="sidebar-button-icon fab fa-lg fa-github" aria-hidden="true"></i>
-      url: https://github.com/kakawait
+      url: https://github.com/riinuots
       weight: 1
     - identifier: stackoverflow
       name: Stack Overflow
@@ -74,7 +74,7 @@ params:
   comment:
     disqus:
       enable: yes
-      shortname: hugo-tranquilpeak-theme
+      shortname: riinuots
     gitalk:
       enable: no
       options:
@@ -144,16 +144,10 @@ params:
   hierarchicalCategories: yes
   imageGallery: yes
   sharingOptions:
-    - icon: fab fa-facebook-square
-      name: Facebook
-      url: https://www.facebook.com/sharer/sharer.php?u=%s
     - icon: fab fa-twitter
       name: Twitter
       url: https://twitter.com/intent/tweet?text=%s
-    - icon: fab fa-linkedin
-      name: Linkedin
-      url: https://www.linkedin.com/sharing/share-offsite/?url=%s
   sidebarBehavior: 1
   syntaxHighlighter: highlight.js
   thumbnailImage: yes
-  thumbnailImagePosition: bottom
+  thumbnailImagePosition: left

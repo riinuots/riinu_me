@@ -1,0 +1,129 @@
+---
+title: 'R: filtering with NA values'
+author: Riinu
+date: '2020-02-27'
+slug: r-filtering-with-na-values
+categories: [R]
+tags: [wrangling, dplyr, janitor]
+output: md_document
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>NA - Not Available/Not applicable is R’s way of denoting empty or missing values. When doing comparisons - such as equal to, greater than, etc. - extra care and thought needs to go into how missing values (NAs) are handled.
+More explanations about this can be found in the Chapter 2: R basics of our book that is freely available at the <a href="https://healthyr.surgicalinformatics.org/">HealthyR website</a></p>
+<p>This post lists a couple of different ways of keeping or discarding rows based on how important the variables with missing values are to you.</p>
+<p>For example, I want to keep rows that have a value for <code>important_a</code> and/or <code>important_b</code> (so rows 1, 3, 4).
+I don’t care whether <code>whatever_c</code> is empty or not, but I do want to keep it.</p>
+<pre class="r"><code>library(tidyverse)
+
+mydata  = tibble(important_a = c(&quot;Value&quot;, NA, &quot;Value&quot;, NA, NA),
+                 important_b = c(NA, NA, &quot;Value&quot;, &quot;Value&quot;, NA),
+                 whatever_c  = c(NA, &quot;Value&quot;, NA, NA, NA))
+
+mydata %&gt;% knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">important_a</th>
+<th align="left">important_b</th>
+<th align="left">whatever_c</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Value</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">Value</td>
+</tr>
+<tr class="odd">
+<td align="left">Value</td>
+<td align="left">Value</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">Value</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+</tbody>
+</table>
+<p>Functions for missing values that are very useful, but don’t do what I want are:</p>
+<ol style="list-style-type: decimal">
+<li>This keeps complete cases based on all columns:</li>
+</ol>
+<pre class="r"><code>mydata %&gt;% 
+  drop_na()</code></pre>
+<pre><code>## # A tibble: 0 × 3
+## # … with 3 variables: important_a &lt;chr&gt;,
+## #   important_b &lt;chr&gt;, whatever_c &lt;chr&gt;</code></pre>
+<p>(Returns 0 as we don’t have rows where all 3 columns have a value).</p>
+<ol start="2" style="list-style-type: decimal">
+<li>This keeps complete cases based on specified columns:</li>
+</ol>
+<pre class="r"><code>mydata %&gt;% 
+  drop_na(important_a, important_b)</code></pre>
+<pre><code>## # A tibble: 1 × 3
+##   important_a important_b whatever_c
+##   &lt;chr&gt;       &lt;chr&gt;       &lt;chr&gt;     
+## 1 Value       Value       &lt;NA&gt;</code></pre>
+<p>This only keeps the row where both a and b have a value.</p>
+<ol start="3" style="list-style-type: decimal">
+<li>This keeps rows that have a value in any column:</li>
+</ol>
+<pre class="r"><code>mydata %&gt;% 
+  filter_all(any_vars(! is.na(.)))</code></pre>
+<pre><code>## # A tibble: 4 × 3
+##   important_a important_b whatever_c
+##   &lt;chr&gt;       &lt;chr&gt;       &lt;chr&gt;     
+## 1 Value       &lt;NA&gt;        &lt;NA&gt;      
+## 2 &lt;NA&gt;        &lt;NA&gt;        Value     
+## 3 Value       Value       &lt;NA&gt;      
+## 4 &lt;NA&gt;        Value       &lt;NA&gt;</code></pre>
+<p>The third example is better achieved using the janitor package:</p>
+<pre class="r"><code>mydata %&gt;% 
+  janitor::remove_empty()</code></pre>
+<pre><code>## # A tibble: 4 × 3
+##   important_a important_b whatever_c
+##   &lt;chr&gt;       &lt;chr&gt;       &lt;chr&gt;     
+## 1 Value       &lt;NA&gt;        &lt;NA&gt;      
+## 2 &lt;NA&gt;        &lt;NA&gt;        Value     
+## 3 Value       Value       &lt;NA&gt;      
+## 4 &lt;NA&gt;        Value       &lt;NA&gt;</code></pre>
+<p>Now, (3) is pretty close, but still, I’m not interested in row 2 - where both a and b are empty but c has a value (which is why it’s kept).</p>
+<ol start="4" style="list-style-type: decimal">
+<li>Simple solution</li>
+</ol>
+<p>A quick solution is to use <code>! is.na()</code> for each variable inside a <code>filter()</code>:</p>
+<pre class="r"><code>mydata %&gt;% 
+  filter(! is.na(important_a) | ! is.na(important_b))</code></pre>
+<pre><code>## # A tibble: 3 × 3
+##   important_a important_b whatever_c
+##   &lt;chr&gt;       &lt;chr&gt;       &lt;chr&gt;     
+## 1 Value       &lt;NA&gt;        &lt;NA&gt;      
+## 2 Value       Value       &lt;NA&gt;      
+## 3 &lt;NA&gt;        Value       &lt;NA&gt;</code></pre>
+<p>And this is definitely what I do when I only have a couple of these variables. But if you have tens, then the filtering logic becomes horrendously long and it’s easy to miss one out/make a mistake.</p>
+<ol start="5" style="list-style-type: decimal">
+<li>Powerful solution:</li>
+</ol>
+<p>A scalable solution is to use <code>filter_at()</code> with <code>vars()</code> with a select helper (e.g., <code>starts with()</code>), and then the <code>any_vars(! is.na(.))</code> that was introduced in (3).</p>
+<pre class="r"><code>mydata %&gt;% 
+  filter_at(vars(starts_with(&quot;important_&quot;)), any_vars(! is.na(.)))</code></pre>
+<pre><code>## # A tibble: 3 × 3
+##   important_a important_b whatever_c
+##   &lt;chr&gt;       &lt;chr&gt;       &lt;chr&gt;     
+## 1 Value       &lt;NA&gt;        &lt;NA&gt;      
+## 2 Value       Value       &lt;NA&gt;      
+## 3 &lt;NA&gt;        Value       &lt;NA&gt;</code></pre>

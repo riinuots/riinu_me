@@ -1,0 +1,77 @@
+---
+title: Converting old Wordpress posts to Hugo
+author: Riinu Ots
+date: '2018-02-24'
+slug: converting-old-wordpress-posts-to-hugo
+thumbnailImage: /img/thumbnails/wordpress.jpg
+categories:
+  - scripting
+tags:
+  - wordpress
+  - hugo
+  - blogdown
+output: md_document
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>Between 2014-2018 I published 29 posts on riinudata.wordpress.com. Today I’m converting all of those to my new website powered by <a href="https://riinu.netlify.com/2018/02/hello-world/">blogdown-Hugo</a>.</p>
+<div id="step-1" class="section level2">
+<h2>Step 1</h2>
+<p>Read the <a href="https://bookdown.org/yihui/blogdown/from-wordpress.html">Migration: From Wordpress</a> chapter of the <strong>blogdown</strong> book.</p>
+</div>
+<div id="step-2" class="section level2">
+<h2>Step 2</h2>
+<p>Get all your wordpress posts into one XML: WP Admin - Tools - Export.</p>
+</div>
+<div id="step-3" class="section level2">
+<h2>Step 3</h2>
+<p>Install <a href="https://github.com/thomasf/exitwp">Exitwp</a> and its dependencies (<code>pyyamp</code>, <code>beautifulsoup4</code>, <code>html2text</code>):</p>
+<pre><code>git clone https://github.com/thomasf/exitwp.git
+sudo easy_install pip
+sudo pip install pyyaml
+sudo pip install beautifulsoup4
+sudo pip install html2text</code></pre>
+<p>This worked on macOS<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> High Sierra - I already had <code>python</code> installed.</p>
+</div>
+<div id="step-4" class="section level2">
+<h2>Step 4</h2>
+<p>Working in the directory that <code>git clone</code> created (<code>exitwp</code>):</p>
+<ul>
+<li>Put the Wordpress XML in the wordpress-xml directory.</li>
+<li>Run <code>xmllint riinu_wordpress.xml</code>, worked the first time for me and I didn’t get any errors (so not sure what the <strong>fix errors if there are</strong> would entail).</li>
+<li>Back in the <code>exitwp</code> folder, run <code>python exitwp.py</code></li>
+<li>This created folders <code>build/jekyll/riinudata.wordpress.com/_posts</code> and the content looked like this:</li>
+</ul>
+<p><img src="/img/exitwp.png" /></p>
+<ul>
+<li>Move all these into <code>exitwp/post</code> folder.</li>
+</ul>
+</div>
+<div id="step-5" class="section level2">
+<h2>Step 5</h2>
+<ul>
+<li>Take a copy of <a href="https://github.com/yihui/oldblog_xml/blob/master/convert.R" class="uri">https://github.com/yihui/oldblog_xml/blob/master/convert.R</a> to clean these .markdown files up and ready for Hugo. I edited the first three lines, skipped the “Do not run if…” chunk as I’d already done that in <strong>Step 3</strong>, edited the <code>authors = c()</code>, did not run the very last chunk (<code>local({if (!dir.exist...})</code>).</li>
+<li>Move all of the files (now <code>.md</code>) into <code>content/post</code> of your blogdown repo. Build and voila!</li>
+</ul>
+</div>
+<div id="further-modifications" class="section level2">
+<h2>Further modifications</h2>
+<p>Looks like most of my posts were converted like a charm, with nicely formatted code blocks and images. But I few things I noticed that I think I have to fix:</p>
+<ul>
+<li>GitHub gists are now displayed as links, will make those into code blocks (or embed them using a <a href="http://blog.cronally.com/embed-gists-with-hugo/">Hugo shortcodes</a>.</li>
+<li>Most images show up perfectly, but some have gotten stuck in a code block, e.g. showing up as <code>&lt;img src="https://riinudata.files.wordpress.com/2016/04/rplot.png" alt="Rplot"/&gt;</code>. Will sort these</li>
+</ul>
+<p>Overall I feared a lot worse and am super happy with the conversion experience. Took exactly 3 h.</p>
+<div class="figure">
+<img src="/img/hilde_knit.jpg" alt="" />
+<p class="caption">My name is Hildegard and I approve this message.</p>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>I’m only 1.5 years late to discover that OS X has been rebranded as macOS: <a href="https://www.wired.com/2016/06/apple-os-x-dead-long-live-macos/" class="uri">https://www.wired.com/2016/06/apple-os-x-dead-long-live-macos/</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
