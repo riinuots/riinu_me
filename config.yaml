@@ -31,10 +31,10 @@ menu:
       pre: <i class="sidebar-button-icon fab fa-lg fa-github" aria-hidden="true"></i>
       url: https://github.com/riinuots
       weight: 1
-    - identifier: stackoverflow
-      name: Stack Overflow
-      pre: <i class="sidebar-button-icon fab fa-lg fa-stack-overflow" aria-hidden="true"></i>
-      url: https://stackoverflow.com/users/636472/kakawait
+    - identifier: twitter
+      name: Twitter
+      pre: <i class="sidebar-button-icon fab fa-lg fa-twitter" aria-hidden="true"></i>
+      url: https://twitter.com/_Riinu_
       weight: 2
   main:
     - identifier: home
@@ -42,26 +42,46 @@ menu:
       pre: <i class="sidebar-button-icon fas fa-lg fa-home" aria-hidden="true"></i>
       url: /
       weight: 1
+    - identifier: book
+      name: Book
+      pre: <i class="sidebar-button-icon fas fa-lg fa-book" aria-hidden="true"></i>
+      url: "https://argoshare.is.ed.ac.uk/healthyr_book/"
+      weight: 2
+    - identifier: asteroid
+      name: Asteroid
+      pre: <i class="sidebar-button-icon fas fa-lg fa-space-shuttle" aria-hidden="true"></i>
+      url: "https://minorplanetcenter.net/db_search/show_object?object_id=25616"
+      weight: 3
+    - identifier: publications
+      name: Publications
+      pre: <i class="sidebar-button-icon fa fa-lg fa-pen" aria-hidden="true"></i>
+      url: "https://scholar.google.co.uk/citations?user=CeW7a8AAAAAJ"
+      weight: 4
+    - identifier: cv
+      name: CV
+      pre: <i class="sidebar-button-icon fas fa-lg fa-file" aria-hidden="true"></i>
+      url: "/pdf/cv_riinu_pius.pdf"
+      weight: 5
     - identifier: categories
       name: Categories
       pre: <i class="sidebar-button-icon fas fa-lg fa-bookmark" aria-hidden="true"></i>
       url: /categories
-      weight: 2
-    - identifier: tags
-      name: Tags
-      pre: <i class="sidebar-button-icon fas fa-lg fa-tags" aria-hidden="true"></i>
-      url: /tags
-      weight: 3
+      weight: 9
+#    - identifier: tags
+#      name: Tags
+#      pre: <i class="sidebar-button-icon fas fa-lg fa-tags" aria-hidden="true"></i>
+#      url: /tags
+#      weight: 3
     - identifier: archives
       name: Archives
       pre: <i class="sidebar-button-icon fas fa-lg fa-archive" aria-hidden="true"></i>
       url: /archives
-      weight: 4
-    - identifier: about
-      name: About
-      pre: <i class="sidebar-button-icon fas fa-lg fa-question" aria-hidden="true"></i>
-      url: /#about
-      weight: 5
+      weight: 10
+#    - identifier: about
+#      name: About
+#      pre: <i class="sidebar-button-icon fas fa-lg fa-question" aria-hidden="true"></i>
+#      url: /#about
+#      weight: 5
   misc:
     - identifier: rss
       name: RSS
