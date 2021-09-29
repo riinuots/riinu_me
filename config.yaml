@@ -4,6 +4,7 @@ defaultContentLanguage: en-us
 title: "Riinu's scripting diary"
 theme: hugo-tranquilpeak-theme
 disqusShortname: riinuots
+googleAnalytics: G-RG01HS79XP
 paginate: 7
 canonifyurls: yes
 permalinks:
