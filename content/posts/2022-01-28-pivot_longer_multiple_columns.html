@@ -1,0 +1,172 @@
+---
+title: 'Reshaping multiple variables into tidy data (wide to long)'
+author: Riinu
+date: '2022-01-28'
+slug: r-filtering-with-na-values
+thumbnailImage: /img/thumbnails/tidyr_logo.png
+categories:
+  - R
+  - scripting
+tags: [tidyr, reshaping data]
+keywords:
+  - tech
+output:
+  md_document:
+    toc: true
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>There’s some explanation on what reshaping data in R means, why we do it, as well as the history, e.g., <code>melt()</code> vs <code>gather()</code> vs <code>pivot_longer()</code> in a previous post: <a href="https://www.riinu.me/2019/04/new-intuitive-ways-to-reshape-data-in-r/">New intuitive ways for reshaping data in R</a></p>
+<p>That post shows how to reshape a single variable that had been recorded/entered across multiple different columns. But if multiple different variables are recorded over multiple different columns, then this is what you might want to do:</p>
+<div id="example-data" class="section level1">
+<h1>Example data</h1>
+<pre class="r"><code># from dput():
+widedata = structure(list(id = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                          time_1 = c(1, 1, 1, 1, 1, 1, 1, 1, 1),
+                          time_2 = c(2, 2, 2, 2, 2, 2, 2, 2, 2), 
+                          time_3 = c(3, 3, 3, 3, 3, 3, 3, 3, 3),
+                          time_4 = c(4, 4, 4, 4, 4, 4, 4, 4, 4),
+                          outcome_1 = c(1, 1, 1, 1, 1, 1, 1, 1, 1),
+                          outcome_2 = c(2, 2, 2, 2, 2, 2, 2, 2, 2),
+                          outcome_3 = c(3, 3, 3, 3, 3, 3, 3, 3, 3),
+                          outcome_4 = c(4, 4, 4, 4, 4, 4, 4, 4, 4)),
+                     row.names = c(NA, -9L), class = c(&quot;tbl_df&quot;, &quot;tbl&quot;, &quot;data.frame&quot;))</code></pre>
+<p>This is what it looks like:</p>
+<div class="figure">
+<img src="/img/widedata.png" alt="" />
+<p class="caption">widedata in RStudio View</p>
+</div>
+<p>And this is what we want it to look like:</p>
+<div class="figure">
+<img src="/img/longdata.png" alt="" />
+<p class="caption">widedata in RStudio View</p>
+</div>
+</div>
+<div id="simple-solution" class="section level1">
+<h1>Simple solution</h1>
+<pre class="r"><code>library(tidyverse)
+
+# pivot_longer puts everything that is not id into two columns (name and value)
+# separate the variable names and stage numbers
+# puts both variables back into two columns using pivot_wider()
+longdata = widedata %&gt;% 
+  pivot_longer(-id) %&gt;% 
+  separate(name, into = c(&quot;name&quot;, &quot;stage&quot;), sep = &quot;_&quot;) %&gt;% 
+  pivot_wider(names_from = &quot;name&quot;, values_from = &quot;value&quot;)</code></pre>
+<p>I think this is a very good solution as it’s easy to understand and debug. See below for a step by step explanation of these lines.</p>
+<p>It is, however, possible to achieve the same result just by using clever arguments inside the <code>pivot_longer()</code> (thank you Lisa for teaching me this):</p>
+</div>
+<div id="clever-solution" class="section level1">
+<h1>Clever solution</h1>
+<pre class="r"><code># same result as above but just pivot_longer()
+widedata %&gt;% 
+  pivot_longer(-id,
+               names_to = c(&quot;.value&quot;, &quot;number&quot;),
+               names_pattern = &quot;(.+)_(.+)&quot;)</code></pre>
+<pre><code>## # A tibble: 36 × 4
+##       id number  time outcome
+##    &lt;dbl&gt; &lt;chr&gt;  &lt;dbl&gt;   &lt;dbl&gt;
+##  1     1 1          1       1
+##  2     1 2          2       2
+##  3     1 3          3       3
+##  4     1 4          4       4
+##  5     2 1          1       1
+##  6     2 2          2       2
+##  7     2 3          3       3
+##  8     2 4          4       4
+##  9     3 1          1       1
+## 10     3 2          2       2
+## # … with 26 more rows</code></pre>
+</div>
+<div id="simple-solution-step-by-step" class="section level1">
+<h1>Simple solution step by step</h1>
+<div id="combine-all-into-two-columns-first" class="section level2">
+<h2>Combine all into two columns first</h2>
+<p><code>pivot_longer(-id)</code> combines all columns except <code>id</code> into two columns (name and value):</p>
+<pre class="r"><code>widedata %&gt;% 
+  pivot_longer(-id)</code></pre>
+<pre><code>## # A tibble: 72 × 3
+##       id name      value
+##    &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;
+##  1     1 time_1        1
+##  2     1 time_2        2
+##  3     1 time_3        3
+##  4     1 time_4        4
+##  5     1 outcome_1     1
+##  6     1 outcome_2     2
+##  7     1 outcome_3     3
+##  8     1 outcome_4     4
+##  9     2 time_1        1
+## 10     2 time_2        2
+## # … with 62 more rows</code></pre>
+<p>The defaults <code>name</code> and <code>value</code> may be changed using these arguments:</p>
+<pre class="r"><code>widedata %&gt;% 
+  pivot_longer(-id, names_to = &quot;my_variables&quot;, values_to = &quot;my_values&quot;) %&gt;% slice(1)</code></pre>
+<pre><code>## # A tibble: 1 × 3
+##      id my_variables my_values
+##   &lt;dbl&gt; &lt;chr&gt;            &lt;dbl&gt;
+## 1     1 time_1               1</code></pre>
+<ul>
+<li>using <code>%&gt;% slice(1)</code> for brevity</li>
+</ul>
+<p>If you have multiple columns that you don’t want collected, then it’s easier to select the ones you want. In this example, it would look like this:</p>
+<pre class="r"><code>widedata %&gt;% 
+  pivot_longer(matches(&quot;time|outcome&quot;)) %&gt;% slice(1)</code></pre>
+<pre><code>## # A tibble: 1 × 3
+##      id name   value
+##   &lt;dbl&gt; &lt;chr&gt;  &lt;dbl&gt;
+## 1     1 time_1     1</code></pre>
+<p>In this example dataset, <code>matches("time|outcome")</code> has the same effect as <code>-id</code>.</p>
+<p>Search for “tidyverse select helpers” to see the various options available for selecting the variables you need (<a href="https://dplyr.tidyverse.org/reference/select.html">select helpers reference</a>).</p>
+</div>
+<div id="separate-column-names-and-numbers" class="section level2">
+<h2>Separate column names and numbers</h2>
+<pre class="r"><code>widedata %&gt;% 
+  pivot_longer(-id) %&gt;% 
+  separate(name, into = c(&quot;name&quot;, &quot;stage&quot;), sep = &quot;_&quot;) %&gt;% slice(1)</code></pre>
+<pre><code>## # A tibble: 1 × 4
+##      id name  stage value
+##   &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt;
+## 1     1 time  1         1</code></pre>
+</div>
+<div id="pivot_wider-so-that-each-variable-has-its-own-column" class="section level2">
+<h2>pivot_wider() so that each variable has its own column</h2>
+<p>And the final step of this solution is <code>pivot_wider()</code> which takes the multiple variables that <code>pivot_longer()</code> combined into <code>name</code> and puts them into their own columns:</p>
+<pre class="r"><code>widedata %&gt;% 
+  pivot_longer(-id) %&gt;% 
+  separate(name, into = c(&quot;name&quot;, &quot;stage&quot;), sep = &quot;_&quot;) %&gt;% 
+  pivot_wider(names_from = &quot;name&quot;, values_from = &quot;value&quot;)</code></pre>
+<pre><code>## # A tibble: 36 × 4
+##       id stage  time outcome
+##    &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;   &lt;dbl&gt;
+##  1     1 1         1       1
+##  2     1 2         2       2
+##  3     1 3         3       3
+##  4     1 4         4       4
+##  5     2 1         1       1
+##  6     2 2         2       2
+##  7     2 3         3       3
+##  8     2 4         4       4
+##  9     3 1         1       1
+## 10     3 2         2       2
+## # … with 26 more rows</code></pre>
+</div>
+</div>
+<div id="what-if-my-columns-dont-have-delimiters-e.g.-instead-of-time_1-time_2...-its-time1-time2-..." class="section level1">
+<h1>What if my columns don’t have delimiters (e.g., instead of <code>time_1, time_2,...</code> it’s <code>time1, time2, ...</code>)</h1>
+<p>In that case I would use <code>mutate()</code> + <code>str_extract()</code>/<code>str_remove()</code>:</p>
+<pre class="r"><code>widedata %&gt;% 
+  pivot_longer(-id) %&gt;% 
+  mutate(stage    = str_extract(name, &quot;[:digit:]&quot;)) %&gt;% 
+  mutate(variable = str_remove(name, &quot;_[:digit:]&quot;)) %&gt;% 
+  pivot_wider(names_from = &quot;name&quot;, values_from = &quot;value&quot;)</code></pre>
+<p>The first mutate extracts the number (<code>"[:digit:]"</code>) from the column called <code>name</code> (which is the result of <code>pivot_longer()</code>), I’ve called the new variable that gets this number <code>stage</code> but you can call it anything. We then remove the number from <code>name</code> as it now lives in a column of its own.</p>
+<p>This extraction is actually what the <code>tidyr::extract()</code> function is for, but it always takes me much longer to get <code>extract()</code> to work as compared to the easy to manage <code>mutate()</code> + <code>str_extract()</code>/<code>str_remove()</code> combo above.</p>
+</div>
+<div id="final-words" class="section level1">
+<h1>Final words</h1>
+<p>Reshaping data is really tricky, and your spreadsheet from hell is likely much more complicated than the simple example here. It always takes me lots of trial and error to get these things to work properly. Especially if there are irregularities in the data. You may find <code>janitor::clean_names()</code> useful, or you may need to do more cleanup using various <code>str_()</code> functions from the <a href="https://stringr.tidyverse.org">stringr package</a>.</p>
+<p>Good luck!</p>
+</div>
