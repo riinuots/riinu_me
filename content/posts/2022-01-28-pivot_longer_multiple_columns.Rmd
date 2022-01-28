@@ -38,11 +38,11 @@ widedata = structure(list(id = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
 
 This is what it looks like:
 
-![widedata in RStudio View](/img/widedata.png)
+![wide data in RStudio View](/img/widedata.png)
 
 And this is what we want it to look like:
 
-![widedata in RStudio View](/img/longdata.png)
+![long data in RStudio View](/img/longdata.png)
 
 
 # Simple solution
