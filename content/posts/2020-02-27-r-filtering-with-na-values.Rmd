@@ -3,6 +3,7 @@ title: 'R: filtering with NA values'
 author: Riinu
 date: '2020-02-27'
 slug: r-filtering-with-na-values
+thumbnailImage: /img/thumbnails/na.png
 categories: [R]
 tags: [wrangling, dplyr, janitor]
 output: md_document

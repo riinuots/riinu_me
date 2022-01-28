@@ -3,6 +3,7 @@ title: 'R: filtering with NA values'
 author: Riinu
 date: '2020-02-27'
 slug: r-filtering-with-na-values
+thumbnailImage: /img/thumbnails/na.png
 categories: [R]
 tags: [wrangling, dplyr, janitor]
 output: md_document
@@ -16,9 +17,17 @@ More explanations about this can be found in the Chapter 2: R basics of our book
 <p>This post lists a couple of different ways of keeping or discarding rows based on how important the variables with missing values are to you.</p>
 <p>For example, I want to keep rows that have a value for <code>important_a</code> and/or <code>important_b</code> (so rows 1, 3, 4).
 I don’t care whether <code>whatever_c</code> is empty or not, but I do want to keep it.</p>
-<pre class="r"><code>library(tidyverse)
-
-mydata  = tibble(important_a = c(&quot;Value&quot;, NA, &quot;Value&quot;, NA, NA),
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## Warning: replacing previous import
+## &#39;lifecycle::last_warnings&#39; by &#39;rlang::last_warnings&#39;
+## when loading &#39;pillar&#39;</code></pre>
+<pre><code>## Warning: replacing previous import
+## &#39;lifecycle::last_warnings&#39; by &#39;rlang::last_warnings&#39;
+## when loading &#39;tibble&#39;</code></pre>
+<pre><code>## Warning: replacing previous import
+## &#39;lifecycle::last_warnings&#39; by &#39;rlang::last_warnings&#39;
+## when loading &#39;hms&#39;</code></pre>
+<pre class="r"><code>mydata  = tibble(important_a = c(&quot;Value&quot;, NA, &quot;Value&quot;, NA, NA),
                  important_b = c(NA, NA, &quot;Value&quot;, &quot;Value&quot;, NA),
                  whatever_c  = c(NA, &quot;Value&quot;, NA, NA, NA))
 
