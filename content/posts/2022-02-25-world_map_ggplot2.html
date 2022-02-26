@@ -1,0 +1,102 @@
+---
+title: 'World map using the tidyverse (ggplot2) and an equal-area projection'
+author: Riinu
+date: '2022-02-25'
+slug: world-map-ggplot2
+thumbnailImage: /img/thumbnails/world_map.png
+categories:
+  - R
+  - scripting
+tags: [ggplot2, map]
+keywords:
+  - tech
+output:
+  md_document:
+    toc: true
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>There are several different ways to make maps in R, and I always have to look it up and figure this out again from previous examples that I’ve used.
+Today I had another look at what’s currently possible and what’s an easy way of making a world map in ggplot2 that doesn’t require fetching data from various places.</p>
+<p>TLDR: Copy this code to plot a world map using the tidyverse:</p>
+<pre class="r"><code>library(tidyverse)
+library(ggthemes)
+
+world_map = map_data(&quot;world&quot;) %&gt;% 
+  filter(! long &gt; 180)
+
+countries = world_map %&gt;% 
+  distinct(region) %&gt;% 
+  rowid_to_column()
+
+countries %&gt;% 
+  ggplot(aes(fill = rowid, map_id = region)) +
+  geom_map(map = world_map) +
+  expand_limits(x = world_map$long, y = world_map$lat) +
+  coord_map(&quot;moll&quot;) +
+  theme_map()</code></pre>
+<p><img src="/posts/2022-02-25-world_map_ggplot2_files/figure-html/unnamed-chunk-1-1.png" width="2304" /></p>
+<div id="explanation" class="section level1">
+<h1>Explanation</h1>
+<p>To make a map using <code>geom_map()</code> you’ll need two datasets: one that includes the map data (country borders), and another one on how to colour in each area.
+I tried doing <code>data = NULL</code> or <code>fill = "grey"</code> to make all countries the same colour, but couldn’t get that to work.
+So I’m creating the necessary second dataset with <code>distinct(world_map, region)</code> which is a list of every country from the map data.
+This list of countries (=regions) is the first argument to <code>ggplot()</code>, the <code>world_map</code> data goes inside <code>geom_map()</code>. <code>expand_limits()</code> are essential as otherwise you will not see anything.</p>
+<pre class="r"><code>library(tidyverse)
+
+# Load map data
+world_map = map_data(&quot;world&quot;)
+
+distinct(world_map, region) %&gt;% 
+  ggplot(aes(map_id = region)) +
+  geom_map(map = world_map) +
+  expand_limits(x = world_map$long, y = world_map$lat)</code></pre>
+<p><img src="/posts/2022-02-25-world_map_ggplot2_files/figure-html/unnamed-chunk-2-1.png" width="960" /></p>
+</div>
+<div id="equal-area-projection" class="section level1">
+<h1>Equal area projection</h1>
+<p>Global maps that do not use an equal area projection are a huge pet peeve of mine.
+The above map is not ‘equal-area’ and the closer to the equator an area is the more diminished it is.</p>
+<p>Let’s just plot Greenland and Algeria for example:</p>
+<pre class="r"><code>tibble(region = c(&quot;Greenland&quot;, &quot;Algeria&quot;)) %&gt;% 
+  ggplot(aes(map_id = region)) +
+  geom_map(map = world_map) +
+  expand_limits(x = world_map$long, y = world_map$lat)</code></pre>
+<p><img src="/posts/2022-02-25-world_map_ggplot2_files/figure-html/unnamed-chunk-3-1.png" width="960" /></p>
+<p>In reality, Algeria is bigger than Greenland: 2.4 million km<sup>2</sup> vs 2.2 million km<sup>2</sup>!</p>
+<p>Therefore, I always use an equal-area projection such as Mollweide:</p>
+<pre class="r"><code>library(tidyverse)
+
+# Load map data
+world_map = map_data(&quot;world&quot;)
+
+distinct(world_map, region) %&gt;% 
+  ggplot(aes(map_id = region)) +
+  geom_map(map = world_map) +
+  expand_limits(x = world_map$long, y = world_map$lat) +
+  coord_map(&quot;moll&quot;)</code></pre>
+<p><img src="/posts/2022-02-25-world_map_ggplot2_files/figure-html/unnamed-chunk-4-1.png" width="960" /></p>
+<p>But then we get those weird lines in the Northern Hemisphere. That’s because parts of the US and Russia extend across the 180th meridian. And since <code>geom_map()</code> is connecting each area with itself it then draws these lines across the globe.</p>
+<p>A simple fix I’ve found is to remove map data that has a longitude greater than 180 degrees:</p>
+<pre class="r"><code>library(tidyverse)
+library(ggthemes)
+
+world_map = map_data(&quot;world&quot;) %&gt;% 
+  filter(! long &gt; 180)
+
+countries = world_map %&gt;% 
+  distinct(region) %&gt;% 
+  rowid_to_column()
+
+countries %&gt;% 
+  ggplot(aes(fill = rowid, map_id = region)) +
+  geom_map(map = world_map) +
+  expand_limits(x = world_map$long, y = world_map$lat) +
+  coord_map(&quot;moll&quot;) +
+  theme_map()</code></pre>
+<p><img src="/posts/2022-02-25-world_map_ggplot2_files/figure-html/unnamed-chunk-5-1.png" width="960" /></p>
+<p>I’ve also thrown in <code>theme_map()</code> from <code>library(ggthemes)</code>, put the coutry list which I made with <code>distinct()</code> into a separate object, and added in <code>fill = rowid</code> for some colour.
+This is useful as I’m generally plotting <a href="https://en.wikipedia.org/wiki/Choropleth_map">chloropleths</a> so I want a tibble with values for each country that I can join with whatever data I have for each country (e.g., student numbers, population, etc.).</p>
+</div>
