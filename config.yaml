@@ -61,7 +61,12 @@ menu:
     - identifier: cv
       name: CV
       pre: <i class="sidebar-button-icon fas fa-lg fa-file" aria-hidden="true"></i>
-      url: "/pdf/cv_riinu_pius.pdf"
+      url: "/pdf/cv_riinu_pius_data_manager.pdf"
+      weight: 5
+    - identifier: quarto
+      name: Quarto workshop
+      pre: <i class="sidebar-button-icon fas fa-lg fa-computer" aria-hidden="true"></i>
+      url: "https://quarto-workshop.netlify.app/"
       weight: 5
     - identifier: categories
       name: Categories
