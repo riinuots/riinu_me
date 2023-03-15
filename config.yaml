@@ -65,7 +65,7 @@ menu:
       weight: 5
     - identifier: quarto
       name: Quarto workshop
-      pre: <i class="sidebar-button-icon fas fa-lg fa-computer" aria-hidden="true"></i>
+      pre: <i class="sidebar-button-icon fas fa-lg fa-file" aria-hidden="true"></i>
       url: "https://quarto-workshop.netlify.app/"
       weight: 5
     - identifier: categories
