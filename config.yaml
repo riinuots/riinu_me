@@ -94,6 +94,12 @@ menu:
       pre: <i class="sidebar-button-icon fas fa-lg fa-rss" aria-hidden="true"></i>
       url: /index.xml
       weight: 1
+  misc:
+    - identifier: photo
+      name: Photo credit
+      pre: <i class="sidebar-button-icon fas fa-lg fa-camera" aria-hidden="true"></i>
+      url: https://unsplash.com/fr/@romet
+      weight: 2
 params:
   autoThumbnailImage: yes
   clearReading: yes
