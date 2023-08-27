@@ -1,0 +1,180 @@
+---
+title: Creating a Quarto website served on Netlify
+author: Riinu
+date: '2023-08-27'
+slug: quarto
+thumbnailImage: /img/thumbnails/quarto.png
+categories: 
+  - R
+  - web
+tags: [web]
+keywords:
+  - web
+output:
+  blogdown::html_page:
+    toc: true
+---
+
+
+<div id="TOC">
+<ul>
+<li><a href="#what-is-quarto" id="toc-what-is-quarto">What is Quarto?</a></li>
+<li><a href="#prerequisites" id="toc-prerequisites">Prerequisites</a></li>
+<li><a href="#create-a-new-quarto-website-project" id="toc-create-a-new-quarto-website-project">1. Create a new Quarto website project</a>
+<ul>
+<li><a href="#troubleshooting" id="toc-troubleshooting">Troubleshooting</a></li>
+</ul></li>
+<li><a href="#edit-your-quarto-website" id="toc-edit-your-quarto-website">2. Edit your Quarto website</a></li>
+<li><a href="#add-a-page-to-your-website" id="toc-add-a-page-to-your-website">3. Add a page to your website</a></li>
+<li><a href="#add-r-code-to-your-website" id="toc-add-r-code-to-your-website">4. Add R code to your website</a></li>
+<li><a href="#serve-your-website-using-netlify" id="toc-serve-your-website-using-netlify">5. Serve your website using Netlify</a>
+<ul>
+<li><a href="#optional-if-want-to-keep-the-site-for-longer-than-1h" id="toc-optional-if-want-to-keep-the-site-for-longer-than-1h">Optional: If want to keep the site for longer than 1h</a></li>
+</ul></li>
+<li><a href="#update-your-website" id="toc-update-your-website">6. Update your website</a>
+<ul>
+<li><a href="#optional-advanced-automatic-deploys-via-github" id="toc-optional-advanced-automatic-deploys-via-github">Optional advanced: automatic deploys via GitHub</a></li>
+</ul></li>
+</ul>
+</div>
+
+<p>I’ve put together a quick ‘getting started with Quarto and Netlify and GitHub (optional) workshop’.</p>
+<p>The instructions can be found in the blog post below, or at this website which also includes short screencasts: <a href="https://quarto-workshop.netlify.app" class="uri">https://quarto-workshop.netlify.app</a></p>
+<div id="what-is-quarto" class="section level2">
+<h2>What is Quarto?</h2>
+<ul>
+<li><p>Quarto<sup>®</sup> is an open-source scientific and technical publishing system built on Pandoc</p></li>
+<li><p><a href="https://quarto.org/" target="_blank">https://quarto.org/</a></p></li>
+<li><p>Colloquially known as the ‘new R Markdown’</p></li>
+</ul>
+</div>
+<div id="prerequisites" class="section level2">
+<h2>Prerequisites</h2>
+<ul>
+<li><p>Install the latest version of RStudio Desktop on your computer (from July 2022, Quarto is included with RStudio)</p>
+<ul>
+<li><a href="https://www.rstudio.com/products/rstudio/download/#download" target="_blank">https://www.rstudio.com/products/rstudio/download/#download</a></li>
+</ul></li>
+<li><p>Install the latest version of R on your computer</p>
+<ul>
+<li><a href="https://cloud.r-project.org/" target="_blank">https://cloud.r-project.org/</a></li>
+</ul></li>
+</ul>
+<p>Workshop versions: R <em>4.2.1</em>, RStudio <em>2022.07.1</em>.</p>
+<p><strong>Note:</strong> Quarto can be used without R or RStudio, e.g., with VS Code. But this workshop demonstrates the use of RStudio and includes some R code.</p>
+</div>
+<div id="create-a-new-quarto-website-project" class="section level1">
+<h1>1. Create a new Quarto website project</h1>
+<ul>
+<li><p>RStudio - New Project - New Directory - Quarto Website</p></li>
+<li><p>Click on Render to have a look at the template.</p></li>
+</ul>
+<div id="troubleshooting" class="section level2">
+<h2>Troubleshooting</h2>
+<ul>
+<li>Error: “C:/Program is not recognised as an internal or external command, operable program or batch file.”
+<ul>
+<li>Make sure the project name and parent folders have no spaces in them (only an issue on some Windows computers).</li>
+</ul></li>
+<li>“Quarto Website” is not listed as an option.
+<ul>
+<li>Make sure your RStudio is version 2022.07.1 or greater.</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="edit-your-quarto-website" class="section level1">
+<h1>2. Edit your Quarto website</h1>
+<ul>
+<li>Change the theme in <code>_quarto.yml</code> to anything other than the default.</li>
+<li>Edit the template content in <code>index.qmd</code> and <code>about.qmd</code>.</li>
+</ul>
+</div>
+<div id="add-a-page-to-your-website" class="section level1">
+<h1>3. Add a page to your website</h1>
+<ul>
+<li>Take a copy of an existing page, e.g., <code>about.qmd</code>. Call it <code>penguins.qmd</code>.</li>
+<li>Edit the title and content of <code>penguins.qmd</code>.</li>
+<li>Add it to <code>_quarto.yml</code>.</li>
+</ul>
+</div>
+<div id="add-r-code-to-your-website" class="section level1">
+<h1>4. Add R code to your website</h1>
+<ul>
+<li>Insert a code chunk.
+<ul>
+<li>Use the green <strong>+C</strong> button or <code>Ctrl+Alt+I</code>/<code>Cmd+Opt+I</code>.</li>
+</ul></li>
+<li>Add in R code, for example:</li>
+</ul>
+<pre><code>#| eval: false
+library(tidyverse)
+library(palmerpenguins)
+
+penguins %&gt;% 
+  ggplot(aes(species, flipper_length_mm, fill = sex, size = body_mass_g)) +
+  geom_jitter(shape = 21, colour = &quot;grey&quot;, alpha = 0.8) +
+  scale_fill_viridis_d() +
+  theme_bw()</code></pre>
+<ul>
+<li>Hide the R code and its warnings.
+<ul>
+<li><p>Search online for ‘quarto output options’ to copy the relevant YAML options.</p></li>
+<li><p>Displaying code is referred to as ‘echo’.</p></li>
+</ul></li>
+</ul>
+</div>
+<div id="serve-your-website-using-netlify" class="section level1">
+<h1>5. Serve your website using Netlify</h1>
+<ul>
+<li>Find the project and its <code>_site</code> directory on your computer.
+<ul>
+<li>The Files tab within RStudio shows you the project path. Locate this folder in File Explorer (Windows) or Finder (macOS).</li>
+</ul></li>
+<li>Search online for ‘netlify drop’</li>
+<li>Drag and drop the <code>_site</code> folder there.</li>
+</ul>
+<div id="optional-if-want-to-keep-the-site-for-longer-than-1h" class="section level2">
+<h2>Optional: If want to keep the site for longer than 1h</h2>
+<ul>
+<li><p>Create a Netlify account (GitHub authentication is convenient). Claim the site.</p></li>
+<li><p>Give it a better URL, e.g., yourname.netlify.app.</p>
+<ul>
+<li><p>Site settings - General - Change site name.</p></li>
+<li><p>FYI, custom domains, so getting rid of the trailing netlify.app cost around £20-30 per year.</p></li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="update-your-website" class="section level1">
+<h1>6. Update your website</h1>
+<ul>
+<li>Edit your website in RStudio. Click Render.</li>
+<li>In Netlify - Deploys - Drag and drop <code>_site</code> folder to the update area:</li>
+</ul>
+<p><img src="/img/netlify_update.png" fig-alt="Netlify site - Deploy - Drag and drop output folder to update site" /></p>
+<div id="optional-advanced-automatic-deploys-via-github" class="section level2">
+<h2>Optional advanced: automatic deploys via GitHub</h2>
+<ul>
+<li><p>If this is the first time you’re using git on your computer, do these things:</p>
+<ul>
+<li><p>Install git: <a href="https://git-scm.com/downloads" target="_blank">https://git-scm.com/downloads</a></p></li>
+<li><p>Create a GitHub account if you don’t have one already: <a href="https://github.com/" target="_blank">https://github.com/</a></p></li>
+<li><p>RStudio, Tools, Global Options, Git/SVN, Create SSH Key.</p></li>
+<li><p>Copy the key over to your GitHub account Settings.</p></li>
+<li><p>Back in RStudio, run these lines in the Shell/Terminal (also under Tools):</p></li>
+</ul></li>
+</ul>
+<p><code>git config --global user.email "your@email.com"</code></p>
+<p><code>git config --global user.name "username"</code></p>
+<ul>
+<li><p>Push your Quarto website project from RStudio to GitHub. Hint: Create a new repository on GitHub first.</p></li>
+<li><p>Make your Netlify automatically update your website when you push to GitHub.</p>
+<ul>
+<li><p>Netlify, Site settings, Build &amp; deploy, Link repository.</p></li>
+<li><p>Publish directory: `_site`.</p></li>
+</ul></li>
+<li><p>Test that it works by editing your website in RStudio, render, commit, push. Tip: for committing multiple files, `git add .` in the Terminal is convenient. It does the same thing as manually ticking everything in the Git tab.</p></li>
+</ul>
+</div>
+</div>

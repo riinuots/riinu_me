@@ -1,0 +1,142 @@
+---
+title: Creating a Quarto website served on Netlify
+author: Riinu
+date: '2023-08-27'
+slug: quarto
+thumbnailImage: /img/thumbnails/quarto.png
+categories: 
+  - R
+  - web
+tags: [web]
+keywords:
+  - web
+output:
+  blogdown::html_page:
+    toc: true
+---
+
+I've put together a quick 'getting started with Quarto and Netlify and GitHub (optional) workshop'.
+
+The instructions can be found in the blog post below, or at this website which also includes short screencasts: https://quarto-workshop.netlify.app
+
+## What is Quarto?
+
+-   Quarto^®^ is an open-source scientific and technical publishing system built on Pandoc
+
+-   [https://quarto.org/](https://quarto.org/){target="_blank"}
+
+-   Colloquially known as the 'new R Markdown'
+
+## Prerequisites
+
+-   Install the latest version of RStudio Desktop on your computer (from July 2022, Quarto is included with RStudio)
+
+    -   [https://www.rstudio.com/products/rstudio/download/#download](https://www.rstudio.com/products/rstudio/download/#download){target="_blank"}
+
+-   Install the latest version of R on your computer
+
+    -   [https://cloud.r-project.org/](https://cloud.r-project.org/){target="_blank"}
+
+Workshop versions: R *4.2.1*, RStudio *2022.07.1*.
+
+**Note:** Quarto can be used without R or RStudio, e.g., with VS Code. But this workshop demonstrates the use of RStudio and includes some R code.
+
+
+# 1. Create a new Quarto website project
+
+-   RStudio - New Project - New Directory - Quarto Website
+
+-   Click on Render to have a look at the template.
+
+## Troubleshooting
+
+-   Error: "C:/Program is not recognised as an internal or external command, operable program or batch file."
+    -   Make sure the project name and parent folders have no spaces in them (only an issue on some Windows computers).
+-   "Quarto Website" is not listed as an option.
+    -   Make sure your RStudio is version 2022.07.1 or greater.
+
+# 2. Edit your Quarto website
+
+-   Change the theme in `_quarto.yml` to anything other than the default.
+-   Edit the template content in `index.qmd` and `about.qmd`.
+
+# 3. Add a page to your website
+
+-   Take a copy of an existing page, e.g., `about.qmd`. Call it `penguins.qmd`.
+-   Edit the title and content of `penguins.qmd`.
+-   Add it to `_quarto.yml`.
+
+# 4. Add R code to your website
+
+-   Insert a code chunk.
+    -   Use the green **+C** button or `Ctrl+Alt+I`/`Cmd+Opt+I`.
+-   Add in R code, for example:
+
+```
+#| eval: false
+library(tidyverse)
+library(palmerpenguins)
+
+penguins %>% 
+  ggplot(aes(species, flipper_length_mm, fill = sex, size = body_mass_g)) +
+  geom_jitter(shape = 21, colour = "grey", alpha = 0.8) +
+  scale_fill_viridis_d() +
+  theme_bw()
+```
+
+-   Hide the R code and its warnings.
+    -   Search online for 'quarto output options' to copy the relevant YAML options.
+
+    -   Displaying code is referred to as 'echo'.
+    
+# 5. Serve your website using Netlify
+
+-   Find the project and its `_site` directory on your computer.
+    -   The Files tab within RStudio shows you the project path. Locate this folder in File Explorer (Windows) or Finder (macOS).
+-   Search online for 'netlify drop'
+-   Drag and drop the `_site` folder there.
+
+## Optional: If want to keep the site for longer than 1h
+
+-   Create a Netlify account (GitHub authentication is convenient). Claim the site.
+
+-   Give it a better URL, e.g., yourname.netlify.app.
+
+    -   Site settings - General - Change site name.
+
+    -   FYI, custom domains, so getting rid of the trailing netlify.app cost around £20-30 per year.
+    
+# 6. Update your website
+
+-   Edit your website in RStudio. Click Render.
+-   In Netlify - Deploys - Drag and drop `_site` folder to the update area:
+
+![](/img/netlify_update.png){fig-alt="Netlify site - Deploy - Drag and drop output folder to update site"}
+
+## Optional advanced: automatic deploys via GitHub
+
+-   If this is the first time you're using git on your computer, do these things:
+
+    -   Install git: [https://git-scm.com/downloads](https://git-scm.com/downloads){target="_blank"}
+
+    -   Create a GitHub account if you don't have one already: [https://github.com/](https://github.com/){target="_blank"}
+
+    -   RStudio, Tools, Global Options, Git/SVN, Create SSH Key.
+
+    -   Copy the key over to your GitHub account Settings.
+
+    -   Back in RStudio, run these lines in the Shell/Terminal (also under Tools):
+
+`git config --global user.email "your@email.com"`
+
+`git config --global user.name "username"`
+
+-   Push your Quarto website project from RStudio to GitHub. Hint: Create a new repository on GitHub first.
+
+-   Make your Netlify automatically update your website when you push to GitHub.
+
+    -   Netlify, Site settings, Build & deploy, Link repository.
+
+    -   Publish directory: \`\_site\`.
+
+-   Test that it works by editing your website in RStudio, render, commit, push. Tip: for committing multiple files, \`git add .\` in the Terminal is convenient. It does the same thing as manually ticking everything in the Git tab.
