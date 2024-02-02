@@ -14,11 +14,15 @@ output:
   blogdown::html_page: default
 ---
 
-TLDR: `library(consort)` is a great new package for creating CONSORT/patient flow diagrams in R. [Jump to example.](#diagram)
+***TLDR:*** `library(consort)` is a great package for creating CONSORT/patient flow diagrams in R. Thank you authors!
+
+[Jump to example code.](#diagram)
+
+[Documentation.](https://github.com/adayim/consort/){target="_blank"}
 
 # Introduction
 
-The easiest way to make a one-off diagram is using something with a graphical interface, such as Power Point, Omnigraffle, or Lucifcharts, just to name a few.
+The easiest way to make a one-off diagram is using something with a graphical interface, such as Power Point, Omnigraffle, or Lucidchart, just to name a few.
 
 If, however, you need something that updates automatically based on the underlying dataset changing, then a programmatical solution using R is possible.
 
