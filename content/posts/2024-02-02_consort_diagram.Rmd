@@ -2,7 +2,7 @@
 title: Flow diagrams using the consort package in R
 author: Riinu
 date: '2024-02-02'
-slug: quarto
+slug: consort
 thumbnailImage: /img/consort_diagram.png
 categories: 
   - R
