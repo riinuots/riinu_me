@@ -14,7 +14,7 @@ output:
   blogdown::html_page: default
 ---
 
-***TLDR:*** `library(consort)` is a great package for creating CONSORT/patient flow diagrams in R. Thank you authors!
+***TLDR:*** `library(consort)` is a great package for creating CONSORT/patient flow diagrams in R. Thank you author Alim Dayim!
 
 [Jump to example code.](#diagram)
 
