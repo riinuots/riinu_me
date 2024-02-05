@@ -2,7 +2,7 @@
 title: Flow diagrams using the consort package in R
 author: Riinu
 date: '2024-02-02'
-slug: quarto
+slug: consort
 thumbnailImage: /img/consort_diagram.png
 categories: 
   - R
@@ -16,7 +16,7 @@ output:
 
 
 
-<p><strong><em>TLDR:</em></strong> <code>library(consort)</code> is a great package for creating CONSORT/patient flow diagrams in R. Thank you authors!</p>
+<p><strong><em>TLDR:</em></strong> <code>library(consort)</code> is a great package for creating CONSORT/patient flow diagrams in R. Thank you author Alim Dayim!</p>
 <p><a href="#diagram">Jump to example code.</a></p>
 <p><a href="https://github.com/adayim/consort/" target="_blank">Documentation.</a></p>
 <div id="introduction" class="section level1">
@@ -96,7 +96,7 @@ p_cons = consort_plot(licodata,
              text_width = 30)
 
 p_cons</code></pre>
-<p><img src="/posts/2024-02-02_consort_diagram_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="/posts/2024-02-05_consort_diagram_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <p>How neat is this? <code>library(consort)</code> calculates these numbers for us, we feed it the patient-level dataset. No need to summarise it yourself before putting in the diagram.</p>
 <p><strong>Notes:</strong></p>
 <ul>
