@@ -167,7 +167,7 @@ params:
       defer: yes
       integrity: sha512-28oDiQZGKUVN6wQ7PSLPNipOcmkCALXKwOi7bnkyFf8QiMZQxG9EQoy/iiNx6Zxj2cG2SbVa4dXKigQhu7GiFw==
       src: https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/yaml.min.js
-  description: Hugo tranquilpeak theme demo
+  description: Riinu's scripting diary
   header:
     rightLink:
       class: ''
