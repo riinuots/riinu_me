@@ -1,0 +1,29 @@
+---
+title: High quality figures from R Markdown or Quarto to Word
+author: Riinu
+date: '2025-07-04'
+slug: dpi
+thumbnailImage: /img/dpi_quarto.png
+categories: 
+  - R
+  - plotting
+tags: [plotting]
+keywords:
+  - plotting
+output:
+  blogdown::html_page: default
+---
+
+***TLDR:*** For high quality images in HTML and Word outputs change your DPI setting to 200 or 300.
+
+
+The default DPI of figures created by R Markdown or Quarto for HTML and Word outputs is 96 (dots per inch - resolution). This may be sufficient for web purposes (HTML), but not sufficient for publishing manuscripts (Word). PDFs include vector graphics and are therefore infinite resolution.
+
+In **R Markdown**, DPI can be changed in the set-up chunk, by including `knitr::opts_chunk$set(dpi = 300)` in the set-up chunk:
+
+![](/img/dpi_rmarkdown.png){fig-alt="Changing the DPI of R Markdown by setting dpi=300 in the set-up chunk."}
+
+And in **Quarto** the same can be achieved by including `fig-dpi: 300` in the YAML:
+
+![](/img/dpi_quarto.png){fig-alt="Changing the DPI of Quarto by setting dpi-fig: 300 in the YAML."}
+
