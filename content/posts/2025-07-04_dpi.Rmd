@@ -2,7 +2,7 @@
 title: High quality figures from R Markdown or Quarto to Word
 author: Riinu
 date: '2025-07-04'
-slug: accuracy
+slug: dpi
 thumbnailImage: /img/dpi_quarto.png
 categories: 
   - R

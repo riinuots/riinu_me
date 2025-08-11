@@ -32,10 +32,15 @@ menu:
       pre: <i class="sidebar-button-icon fab fa-lg fa-github" aria-hidden="true"></i>
       url: https://github.com/riinuots
       weight: 1
-    - identifier: twitter
-      name: Twitter
-      pre: <i class="sidebar-button-icon fab fa-lg fa-twitter" aria-hidden="true"></i>
-      url: https://twitter.com/_Riinu_
+    - identifier: bluesky
+      name: Bluesky
+      pre: <i class="sidebar-button-icon fas fa-lg fa-bold" aria-hidden="true"></i>
+      url: https://bsky.app/profile/pius.cloud
+      weight: 2
+    - identifier: linkedin
+      name: LinkedIn
+      pre: <i class="sidebar-button-icon fab fa-lg fa-linkedin" aria-hidden="true"></i>
+      url: https://www.linkedin.com/in/riinu-pius-18860140/
       weight: 2
   main:
     - identifier: home
